@@ -1,0 +1,125 @@
+let matrix = [
+    [2, 7, 6],
+    [9, 5, 1],
+    [4, 3, 8]
+];
+
+// console.table(matrix); see the matrix in a table
+
+function isMagicSquare(matrix) {
+    let n = matrix.length;
+    let max = n * n;
+    let duplicates = new Set(); // create a new array to check for doubles in original array
+
+for (let i = 0; i < n; i++) {
+    if (matrix[i].length !== n) { // since matrix.length equals n, need to see if columns (matrix[i].length) also equal n
+        return false;
+    }
+    for (let j = 0; j < n; j++) { // j is the column position
+        let integer = matrix[i][j]; // matrix[i][j] points to a specific item in the matrix - like coordinates
+        if (integer < 1 || integer > max || duplicates.has(integer)) {
+            return false;
+        }
+        duplicates.add(integer);
+    } 
+}
+    return isMagicSquareFinal(matrix); // if preliminary function equals true, move onto sums part of function
+}
+
+function isMagicSquareFinal(matrix) {
+    let n = matrix.length;
+    let diagonalSumOne = 0; // diagonal sums first
+    for (let i = 0; i < n; i++) {
+        diagonalSumOne += matrix[i][i]; // (0,0), (1,1), (2,2), etc 
+    }
+    let diagonalSumTwo = 0;
+    for (let i = 0; i < n; i++) {
+        diagonalSumTwo += matrix[i][n - 1 - i]; // n is the matrix length and subtracting one gives you the max position. Subtracting i (current row) from it places the column in the opposite position of the row, creating the diagonal.
+    }
+    if (diagonalSumOne != diagonalSumTwo) {
+        return false;
+    } else {
+    for (let i = 0; i < n; i++) {
+        let rowSum = 0;
+        let columnSum = 0;
+        for (let j = 0; j < n; j++) {
+            rowSum += matrix[i][j];
+            columnSum += matrix[j][i];
+        } 
+        // console.log(rowSum); - I wanted to *see* the magic constant.
+
+        if (rowSum != columnSum || rowSum != diagonalSumOne) { // if rowSum and columnSum are equal then no need to test both against diagonal sums
+            return false;
+        }
+    } return true;
+}};
+
+console.log(isMagicSquare(matrix));
+
+
+
+// test cases
+
+// 4 x 4, should be true
+let passingMatrix = [
+    [1, 14, 15, 4],
+    [12, 7, 6, 9],
+    [8, 11, 10, 5],
+    [13, 2, 3, 16]
+];
+
+// uneven dimensions (3x4), should be false
+let failingRowsAndColumnsMatrix = [
+    [1, 14, 15, 4],
+    [12, 7, 6, 9],
+    [8, 11, 10, 5]
+];
+
+// different number of columns, should be false
+let failingRowsAndColumnsTwoMatrix = [
+    [1, 14, 15, 4],
+    [12, 7, 6]
+];
+
+// 5x5 but changed 25 to 26, should be false
+let failingBigIntegersMatrix = [
+    [11, 24, 7, 20, 3],
+    [4, 12, 26, 8, 16],
+    [17, 5, 13, 21, 9],
+    [10, 18, 1, 14, 22],
+    [23, 6, 19, 2, 15]
+];
+
+// 5x5 but changed 2 to -2, should be false
+let failingSmallIntegersTwoMatrix = [
+    [11, 24, 7, 20, 3],
+    [4, 12, 26, 8, 16],
+    [17, 5, 13, 21, 9],
+    [10, 18, 1, 14, 22],
+    [23, 6, 19, -2, 15]
+];
+
+// 5x5 but changed 8 to 7, should be false
+let duplicateIntegersMatrix = [
+    [11, 24, 7, 20, 3],
+    [4, 12, 26, 7, 16],
+    [17, 5, 13, 21, 9],
+    [10, 18, 1, 14, 22],
+    [23, 6, 19, 2, 15]
+];
+
+// 4x4 but swapped the 6 and 7, should be false
+let notEqualDiagonalsMatrix = [
+    [1, 14, 15, 4],
+    [12, 6, 7, 9],
+    [8, 11, 10, 5],
+    [13, 2, 3, 16]
+];
+
+// 4x4 but swapped the 14 and 15, should be false
+let notEqualSumRowsAndColumnsMatrix = [
+    [1, 15, 14, 4],
+    [12, 7, 6, 9],
+    [8, 11, 10, 5],
+    [13, 2, 3, 16]
+];
