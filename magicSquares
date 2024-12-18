@@ -4,57 +4,63 @@ let matrix = [
     [4, 3, 8]
 ];
 
-// console.table(matrix); see the matrix in a table
-
-function isMagicSquare(matrix) {
-    let n = matrix.length;
-    let max = n * n;
-    let duplicates = new Set(); // create a new array to check for doubles in original array
-
-for (let i = 0; i < n; i++) {
-    if (matrix[i].length !== n) { // since matrix.length equals n, need to see if columns (matrix[i].length) also equal n
+const isMagicSquare = (matrix) => {
+    if (!matrix.every(Array.isArray)) {
         return false;
     }
-    for (let j = 0; j < n; j++) { // j is the column position
-        let integer = matrix[i][j]; // matrix[i][j] points to a specific item in the matrix - like coordinates
+
+    const n = matrix.length;
+    const max = n * n;
+    const duplicates = new Set();
+
+    if (!matrix.every(row => row.length === n)) {
+        return false;
+    }
+
+    function checkAndAddInteger(integer, max, duplicates) {
         if (integer < 1 || integer > max || duplicates.has(integer)) {
             return false;
-        }
-        duplicates.add(integer);
-    } 
-}
-    return isMagicSquareFinal(matrix); // if preliminary function equals true, move onto sums part of function
-}
-
-function isMagicSquareFinal(matrix) {
-    let n = matrix.length;
-    let diagonalSumOne = 0; // diagonal sums first
-    for (let i = 0; i < n; i++) {
-        diagonalSumOne += matrix[i][i]; // (0,0), (1,1), (2,2), etc 
-    }
-    let diagonalSumTwo = 0;
-    for (let i = 0; i < n; i++) {
-        diagonalSumTwo += matrix[i][n - 1 - i]; // n is the matrix length and subtracting one gives you the max position. Subtracting i (current row) from it places the column in the opposite position of the row, creating the diagonal.
-    }
-    if (diagonalSumOne != diagonalSumTwo) {
-        return false;
-    } else {
-    for (let i = 0; i < n; i++) {
-        let rowSum = 0;
-        let columnSum = 0;
-        for (let j = 0; j < n; j++) {
-            rowSum += matrix[i][j];
-            columnSum += matrix[j][i];
         } 
-        // console.log(rowSum); - I wanted to *see* the magic constant.
+        duplicates.add(integer);
+        return true;
+    }
 
-        if (rowSum != columnSum || rowSum != diagonalSumOne) { // if rowSum and columnSum are equal then no need to test both against diagonal sums
+    for (let i  = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+        let integer = matrix[i][j];
+
+        if (!checkAndAddInteger(integer, max, duplicates)) {
             return false;
         }
-    } return true;
-}};
+    }
+}
+    
 
-console.log(isMagicSquare(matrix));
+    const isMagicSquareFinal = (matrix) => {
+        let n = matrix.length;
+
+        let diagonalSumOne = matrix.reduce((sum, row, index) => sum + row[index], 0);
+
+        let diagonalSumTwo = matrix.reduce((sum, row, index) => sum + row[n - 1 - index], 0);
+
+        if (diagonalSumOne !== diagonalSumTwo) {
+            return false;
+        }
+
+    for (let i = 0; i < n; i++) {
+        let rowSum = matrix[i].reduce((sum, num) => sum + num, 0);
+
+        let columnSum = matrix.reduce((sum, row) => sum + row[i], 0);
+
+        if (rowSum !== columnSum || rowSum !== diagonalSumOne) {
+            return false;
+        }
+    }
+    return true;
+};
+
+return isMagicSquareFinal(matrix);
+};
 
 
 
